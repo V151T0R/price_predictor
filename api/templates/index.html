@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Check Used Car Price | AutoValuation{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Used Car Valuation</h1>
+    <p>Get a fair market price estimate for any used car in seconds based on advanced Machine Learning algorithms.</p>
+</div>
+
+<div class="container">
+    {% if prediction %}
+    <div class="prediction-box {% if 'Error' in prediction %}error{% endif %}">
+        <h2>Estimated Market Value</h2>
+        
+        {% if not 'Error' in prediction %}
+        <div class="speedometer-container">
+            <div class="speedometer-dial"></div>
+            <div class="speedometer-needle" id="priceNeedle"></div>
+        </div>
+        {% endif %}
+
+        <div class="price">{{ prediction }}</div>
+        {% if not 'Error' in prediction %}
+        <p class="model-info">Computed using {{ model_type | replace('_', ' ') | title }}</p>
+        
+        <script>
+            // Speedometer Animation Logic
+            document.addEventListener("DOMContentLoaded", function() {
+                const rawPrice = {{ raw_price | default(0) }};
+                const maxScale = 80000; // Define max meter scale (e.g., $80k)
+                
+                // Calculate angle: 0 price = -90deg (left), maxScale = 90deg (right)
+                let boundedPrice = Math.min(rawPrice, maxScale);
+                let degree = (boundedPrice / maxScale) * 180 - 90;
+                
+                // Trigger animation after a slight delay for dramatic effect
+                setTimeout(() => {
+                    const needle = document.getElementById('priceNeedle');
+                    if(needle) {
+                        needle.style.transform = `rotate(${degree}deg)`;
+                    }
+                }, 300);
+            });
+        </script>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="form-header">
+        <h3>Enter Car Details</h3>
+    </div>
+    
+    <form action="/" method="post" class="form-grid">
+        <div class="form-group">
+            <label for="brand">Brand</label>
+            <input type="text" id="brand" name="brand" placeholder="e.g., Hyundai" value="{{ features.brand if features else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" id="model" name="model" placeholder="e.g., Creta" value="{{ features.model if features else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="model_year">Manufacturing Year</label>
+            <input type="number" id="model_year" name="model_year" placeholder="e.g., 2019" value="{{ features.model_year if features else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="milage">Kilometers Driven</label>
+            <input type="text" id="milage" name="milage" placeholder="e.g., 45000" value="{{ features.milage if features else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="fuel_type">Fuel Type</label>
+            <select id="fuel_type" name="fuel_type">
+                <option value="Gasoline" {% if features and features.fuel_type == 'Gasoline' %}selected{% endif %}>Petrol (Gasoline)</option>
+                <option value="Diesel" {% if features and features.fuel_type == 'Diesel' %}selected{% endif %}>Diesel</option>
+                <option value="Hybrid" {% if features and features.fuel_type == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+                <option value="Electric" {% if features and features.fuel_type == 'Electric' %}selected{% endif %}>Electric</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="engine">Engine Capacity / Type</label>
+            <input type="text" id="engine" name="engine" placeholder="e.g., 1.5L I4" value="{{ features.engine if features else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="transmission">Transmission</label>
+            <select id="transmission" name="transmission">
+                <option value="Manual" {% if features and features.transmission == 'Manual' %}selected{% endif %}>Manual</option>
+                <option value="Automatic" {% if features and features.transmission == 'Automatic' %}selected{% endif %}>Automatic</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ext_col">Exterior Color</label>
+            <input type="text" id="ext_col" name="ext_col" placeholder="e.g., White" value="{{ features.ext_col if features else '' }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="int_col">Interior Color</label>
+            <input type="text" id="int_col" name="int_col" placeholder="e.g., Black" value="{{ features.int_col if features else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="accident">Accident History</label>
+            <select id="accident" name="accident">
+                <option value="None reported" {% if features and features.accident == 'None reported' %}selected{% endif %}>No Accidents Reported</option>
+                <option value="At least 1 accident or damage reported" {% if features and features.accident == 'At least 1 accident or damage reported' %}selected{% endif %}>1 or More Accidents</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="clean_title">Title Status</label>
+            <select id="clean_title" name="clean_title">
+                <option value="Yes" {% if features and features.clean_title == 'Yes' %}selected{% endif %}>Clean Title</option>
+                <option value="No" {% if features and features.clean_title == 'No' %}selected{% endif %}>Salvage/Rebuilt Title</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="model_type">Valuation Algorithm</label>
+            <select id="model_type" name="model_type">
+                <option value="random_forest" {% if model_type == 'random_forest' %}selected{% endif %}>Random Forest (Recommended)</option>
+                <option value="pytorch_nn" {% if model_type == 'pytorch_nn' %}selected{% endif %}>Deep Neural Network</option>
+                <option value="linear_regression" {% if model_type == 'linear_regression' %}selected{% endif %}>Linear Regression</option>
+            </select>
+        </div>
+
+        <div class="form-submit">
+            <button type="submit" class="btn btn-primary">Check Valuation</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

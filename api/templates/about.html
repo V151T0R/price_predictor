@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}How It Works | AutoValuation{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Understanding Our Valuation</h1>
+    <p>Transparency in how we calculate the true market value of your vehicle.</p>
+</div>
+
+<div class="container text-content">
+    <h2>The Science Behind the Price</h2>
+    <p>Our valuation tool leverages advanced Machine Learning algorithms trained on millions of historical used car transactions. By analyzing market trends and vehicle depreciation curves, we provide an accurate, unbiased price estimate.</p>
+    
+    <h3>Key Factors We Consider</h3>
+    <ul>
+        <li><strong>Make and Model:</strong> Popular brands and reliable models hold their value better over time.</li>
+        <li><strong>Age (Manufacturing Year):</strong> Vehicles depreciate steeply in the first 3 years. We factor in the exact age of the car.</li>
+        <li><strong>Mileage (Kilometers Driven):</strong> Lower mileage typically correlates with less wear and tear, increasing the vehicle's worth.</li>
+        <li><strong>Accident History:</strong> A clean history report significantly boosts market confidence and value.</li>
+        <li><strong>Condition and Title:</strong> Clean titles guarantee the car hasn't been written off by an insurance company.</li>
+    </ul>
+
+    <h3>Our Algorithms</h3>
+    <p>You can choose which mathematical model calculates your price:</p>
+    <ul>
+        <li><strong>Random Forest:</strong> Uses an ensemble of decision trees. Excellent for handling complex, non-linear relationships in car features.</li>
+        <li><strong>Deep Neural Network:</strong> A PyTorch-based model that mimics the human brain to find hidden patterns in pricing data.</li>
+        <li><strong>Linear Regression:</strong> A traditional statistical approach that establishes a linear baseline for depreciation.</li>
+    </ul>
+
+    <div class="cta-box">
+        <p>Ready to find out what your car is worth?</p>
+        <a href="/" class="btn btn-primary" style="display: inline-block; width: auto; padding: 0.8rem 2rem;">Check Price Now</a>
+    </div>
+</div>
+{% endblock %}
+
